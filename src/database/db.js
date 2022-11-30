@@ -15,4 +15,4 @@ catch (error) {
 }
 
 const db = mongoClient.db("DrivenCracy");
-export default db;
+export const dbPolls = db.collection("polls");
