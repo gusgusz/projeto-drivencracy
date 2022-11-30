@@ -21,8 +21,9 @@ export async function CreatePoll( req, res ) {
     if( validate.error ) return res.status( 422 ).send( validate.error.details[ 0 ].message );
     
     if( dayjs( expireAt ).isBefore( dayjs() ) ) return res.status( 422 ).send( "A data de expiração deve ser maior que a data atual" );
+  
 
-    if( expireAt === "") return res.status( 422 ).send( "A data de expiração não pode ser vazia" );
+   if( expireAt === "") return res.status( 422 ).send( "A data de expiração não pode ser vazia" );
     // vou ter que retirar a parte de cima... se for vazia preissa colocar a data atual + 1 mes
 
     const poll = {

@@ -16,3 +16,4 @@ catch (error) {
 
 const db = mongoClient.db("DrivenCracy");
 export const dbPolls = db.collection("polls");
+export const dbChoices = db.collection("choices");
