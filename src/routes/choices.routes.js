@@ -1,8 +1,8 @@
 import {Router} from 'express';
-import { createChoice } from '../controllers/choices.controllers.js';
+import { createChoice, getChoices } from '../controllers/choices.controllers.js';
 
 const router = Router();
 
 router.post("/choice", createChoice);
-
+router.get("/poll/:id/choice", getChoices);
 export default router;

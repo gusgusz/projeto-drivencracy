@@ -15,7 +15,7 @@ export async function createChoice(req,res){
         const choices = await dbChoices.find({pollId: pollId}).toArray();
         console.log(choices);
         const isthischoice = choices?.filter(choice => choice.title === title);
-        if(isthischoice.length > 0) return res.status(409).send("Essa opção já existe");
+        if(isthischoice.length > 0) return res.status(409).send("Esse nome já existe");
 
         const choice = {
             title,
@@ -32,4 +32,24 @@ catch (error){
     res.sendStatus(500);
     return;
 }
+};
+
+export async function getChoices(req,res){
+    const {id} = req.params;
+    console.log(id);
+
+    try{
+        const choices =  await dbChoices.find({pollId: id}).toArray();
+        if(!await dbPolls.findOne({_id: ObjectId(id)})){
+            res.status(404).send("Enquete não existe");
+            return;
+        }
+       
+        res.send(choices);
+    }
+    catch (error){
+        console.log(error);
+        res.sendStatus(500);
+        return;
+    }
 };
