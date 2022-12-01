@@ -19,7 +19,8 @@ export async function createChoice(req,res){
 
         const choice = {
             title,
-            pollId
+            pollId,
+            votes: 0
         }
         console.log(choice);
         await dbChoices.insertOne(choice);
@@ -41,11 +42,20 @@ export async function getChoices(req,res){
     try{
         const choices =  await dbChoices.find({pollId: id}).toArray();
         if(!await dbPolls.findOne({_id: ObjectId(id)})){
+            // se o token não esta em um formato valido cai no catch... fazer uma validação no começo
+            // de ate 12 bits , hexadecimal
             res.status(404).send("Enquete não existe");
             return;
         }
-       
-        res.send(choices);
+       const result = choices.map(choice => {
+              return {
+                _id: choice._id,
+                title: choice.title,
+                pollId: choice.pollId,
+                
+              }
+       });
+        res.send(result);
     }
     catch (error){
         console.log(error);
@@ -53,3 +63,20 @@ export async function getChoices(req,res){
         return;
     }
 };
+
+export async function voteChoice(req,res){
+    const {id} = req.params;
+    
+    try{
+        const choice = await dbChoices.findOne({_id: ObjectId(id)});
+        if(!choice) return res.status(404).send("Essa opção não existe");
+        
+        await dbChoices.updateOne({_id: ObjectId(id)}, {$inc: {votes: 1}});
+        res.sendStatus(200);
+    }
+    catch (error){
+        console.log(error);
+        res.sendStatus(500);
+        return;
+    }
+}
