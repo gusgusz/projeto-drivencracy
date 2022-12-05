@@ -35,7 +35,7 @@ export async function CreatePoll( req, res ) {
     };
     try{
         await dbPolls.insertOne( poll );
-        res.status( 201 ).send( "Enquete criada com sucesso!" );
+        res.status( 201 ).send(poll );
         return;
     }catch ( error ) {
         res.status( 500 ).send( error.message );
