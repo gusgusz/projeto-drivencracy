@@ -66,15 +66,21 @@ export async function getChoices(req,res){
 
 export async function voteChoice(req,res){
     const {id} = req.params;
+   
+        
+   
+    
     
     try{
         const choice = await dbChoices.findOne({_id: ObjectId(id)});
         if(!choice) return res.status(404).send("Essa opção não existe");
-        
+        const poll = await dbPolls.findOne({_id: ObjectId(choice.pollId)});
+        if(!poll) return res.status(404).send("Enquete não existe");
+        if(dayjs(poll.expireAt).isBefore(dayjs())) return res.status(422).send("A enquete já expirou");
         await dbChoices.updateOne({_id: ObjectId(id)}, {$inc: {votes: 1}});
         res.sendStatus(200);
     }
-    catch (error){
+    catch (error){ 
         console.log(error);
         res.sendStatus(500);
         return;
